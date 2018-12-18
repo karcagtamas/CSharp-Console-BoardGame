@@ -12,13 +12,29 @@ namespace CSharp_Console_BoardGame
         {
             int fields = 44;
             int round = 1;
-            int first = 1;
-            int second = 1;
+            //int first = 1;
+            //int second = 1;
             bool end = false;
-            bool firstStepDouble = false;
-            bool secondStepDouble = false;
+            int winner = 0;
+            //bool firstStepDouble = false;
+            //bool secondStepDouble = false;
             int[] blue = { 10, 20, 30, 40 };
-            Dictionary<int, int> arrow = new Dictionary<int, int>(){{14, 5}, {26, 18}, {42, 24}};
+            Dictionary<int, int> arrow = new Dictionary<int, int>() { { 14, 5 }, { 26, 18 }, { 42, 24 } };
+            string[] names = { "András", "Bence", "Cecilia", "Dénes", "Elemér", "Ferenc", "Géza", "Hedvig", "István" };
+
+            Console.Write("Adjon meg egy játékos számot (2-8):");
+            int players = int.TryParse(Console.ReadLine(), out int x)? x : 2;
+            if (players < 2) players = 2;
+            if (players > 8) players = 8;
+            int[] Players = new int[players];
+            bool[] Doubles = new bool[players];
+
+            for (int i = 0; i < Players.Length; i++)
+            {
+                Players[i] = 1;
+            }
+            
+
             Random r = new Random();
             do
             {
@@ -26,71 +42,38 @@ namespace CSharp_Console_BoardGame
                 // Kör kiirás
                 Console.WriteLine("{0}. kör", round);
 
-                // Első (András)
-                int x = r.Next(1, 7);
-                first += firstStepDouble? + x * 2 : x;
-                if (first >= fields)
-                {
-                    first = fields;
-                    end = true;
-                }
-                if (firstStepDouble)
-                {
-                    firstStepDouble = false;
-                    
-                }
-
-                if (blue.Contains(first))
-                {
-                    firstStepDouble = true;
-                    Console.ForegroundColor = ConsoleColor.Blue;
-                }
-                if (arrow.ContainsKey(first))
-                {
-                    first = arrow[first];
-                    Console.ForegroundColor = ConsoleColor.Red;
-                }
-
-                Console.WriteLine("\tAndrás {0}-t dobott, 0 {1}. mezőre lépett.", x, first);
-
-                if (!end)
+                for (int i = 0; i < Players.Length && !end; i++)
                 {
                     Console.ForegroundColor = ConsoleColor.Gray;
-
-                    // Második (András)
-                    int y = r.Next(1, 7);
-                    second += secondStepDouble ? + y * 2 : y;
-                    if (second >= fields)
+                    int rnd = r.Next(1, 7);
+                    Players[i] += Doubles[i] ? rnd * 2 : rnd;
+                    if (Doubles[i])
                     {
-                        second = fields;
-                        end = true;
-                    }
-                    if (secondStepDouble)
-                    {
-                        secondStepDouble = false;
-                    }
-
-                    if (blue.Contains(second))
-                    {
-                        secondStepDouble = true;
+                        Doubles[i] = false;
                         Console.ForegroundColor = ConsoleColor.Blue;
                     }
-                    if (arrow.ContainsKey(second))
+                    if (Players[i] >= fields)
                     {
-                        second = arrow[second];
+                        Players[i] = fields;
+                        end = true;
+                        winner = i;
+                    }
+                    if (blue.Contains(Players[i]))
+                    {
+                        Doubles[i] = true;
+                    }
+                    if (arrow.ContainsKey(Players[i]))
+                    {
+                        Players[i] = arrow[Players[i]];
                         Console.ForegroundColor = ConsoleColor.Red;
                     }
-
-                    Console.WriteLine("\tBence {0}-t dobott, 0 {1}. mezőre lépett.", y, second);
+                    Console.WriteLine("\t{0} {1}-t dobott, {2}. mezőre lépett.", names[i], rnd, Players[i]);
                 }
-
-
                 round++;
             } while (!end);
 
             Console.ForegroundColor = ConsoleColor.Green;
-            if (first == fields) Console.WriteLine("András");
-            else Console.WriteLine("Bence");
+            Console.WriteLine(names[winner]);
             Console.ReadKey();
         }
     }
