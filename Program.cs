@@ -22,6 +22,7 @@ namespace CSharp_Console_BoardGame
             Dictionary<int, int> arrow = new Dictionary<int, int>() { { 14, 5 }, { 26, 18 }, { 42, 24 } };
             string[] names = { "András", "Bence", "Cecilia", "Dénes", "Elemér", "Ferenc", "Géza", "Hedvig", "István" };
 
+            Console.ForegroundColor = ConsoleColor.Yellow;
             Console.Write("Adjon meg egy játékos számot (2-8):");
             int players = int.TryParse(Console.ReadLine(), out int x)? x : 2;
             if (players < 2) players = 2;
